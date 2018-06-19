@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+	<Resource id="None-JTA-Connection" type="DataSource">
+		JdbcDriver com.mysql.jdbc.Driver
+		JdbcUrl jdbc:mysql://localhost:3306/j2ee
+		UserName root
+		Password hicailiao
+		JtaManaged false
+		maxIdle 25
+		maxActive 10
+	</Resource>
+</resources>

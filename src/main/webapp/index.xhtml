@@ -1,0 +1,115 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:f="http://java.sun.com/jsf/core"
+				template="/WEB-INF/template/layout.xhtml">
+	<ui:define name="content">
+		<h:form>
+			<p:growl delay="3000" redisplay="true" autoUpdate="true"/>
+			<div class="card">
+				<div class="ui-g">
+					<div class="ui-g-12">
+						<p:commandButton value="Add"
+										 update="dialog"
+										 immediate="true"
+										 oncomplete="PF('dialog').show()">
+							<f:actionListener binding="#{userManager.reset()}"/>
+							<f:actionListener binding="#{actionModifier.setActionType('Create')}"/>
+							<p:resetInput target="dialog"/>
+						</p:commandButton>
+					</div>
+				</div>
+
+				<!--  Information Dialog -->
+				<p:dialog header="Add new user"
+						  id="dialog"
+						  widgetVar="dialog"
+						  modal="true"
+						  height="250"
+						  width="430"
+						  resizable="false"
+						  showEffect="fade" hideEffect="fade" responsive="true">
+					<h:panelGrid columns="2">
+						<p:outputLabel value="userName:" for="userName"/>
+						<p:inputText value="#{userManager.user.userName}"
+									 id="userName"
+									 required="true"/>
+
+						<p:outputLabel value="Password:" for="password"/>
+						<p:password value="#{userManager.user.password}"
+									id="password"
+									redisplay="true"
+									match="confirm_password"
+									required="true"/>
+
+						<p:outputLabel value="confirm password:" for="confirm_password"/>
+						<p:password value="#{userManager.user.password}"
+									id="confirm_password"
+									redisplay="true"
+									required="true"/>
+
+						<p:outputLabel value="age:" for="age"/>
+						<p:inputText value="#{userManager.user.age}"
+									 id="age"
+									 required="true"/>
+
+						<p:outputLabel value="mobile:" for="mobile"/>
+						<p:inputText value="#{userManager.user.mobile}"
+									 id="mobile"
+									 required="true"/>
+
+
+						<p:outputLabel value="addTime:" for="addTime"/>
+						<p:calendar value="#{userManager.user.addTime}" id="addTime"/>
+					</h:panelGrid>
+					<p:spacer/>
+					<p:separator/>
+
+					<c:set var="action" value="#{actionModifier.actionType}"/>
+					<p:commandButton id="btnAction"
+									 process="dialog"
+									 update="@parent table"
+									 value="#{action}"
+									 oncomplete="PF('dialog').hide()"
+									 action="#{userManager.execute}"/>
+				</p:dialog>
+
+				<p:dataTable id="table"
+							 var="user"
+							 value="#{userManager.userList}"
+							 rows="10"
+							 selectionMode="single"
+							 rowKey="#{user.id}"
+							 selection="#{userManager.user}">
+					<p:column headerText="Username" sortBy="#{user.id}">
+						<h:outputText value="#{user.userName}"/>
+					</p:column>
+					<p:column headerText="age" sortBy="#{user.age}">
+						<h:outputText value="#{user.age}"/>
+					</p:column>
+					<p:column headerText="mobile" sortBy="#{user.mobile}">
+						<h:outputText value="#{user.mobile}"/>
+					</p:column>
+					<p:column headerText="addTime" sortBy="#{user.addTime}">
+						<h:outputText value="#{user.addTime}"/>
+					</p:column>
+				</p:dataTable>
+
+				<p:contextMenu for="table">
+					<p:menuitem value="Update"
+								update="dialog"
+								icon="ui-icon-search"
+								process="@this,table"
+								actionListener="#{actionModifier.setActionType('Update')}"
+								oncomplete="PF('dialog').show()"/>
+					<p:menuitem value="Delete"
+								icon="ui-icon-close"
+								update="table"
+								process="@this,table"
+								action="#{userManager.removeUser}"/>
+				</p:contextMenu>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>
